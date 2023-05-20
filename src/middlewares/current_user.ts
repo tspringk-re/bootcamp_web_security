@@ -27,3 +27,16 @@ export const ensureOwnerOfPost: RequestHandler = async (req, res, next) => {
     res.redirect("/posts");
   }
 };
+
+export const ensureOwnerOfUser: RequestHandler = async (req, res, next) => {
+  const {userId} = req.params;
+  const user = await User.find(Number(userId));
+
+  if (Number(userId) === req.authentication?.currentUserId) {
+    res.locals.user = user;
+    next();
+  } else {
+    req.dialogMessage?.setMessage("Unauthorized access");
+    res.redirect("/posts");
+  }
+};

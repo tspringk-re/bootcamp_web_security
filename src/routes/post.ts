@@ -52,7 +52,7 @@ postRouter.get("/:postId", ensureAuthUser, async (req, res, next) => {
     user,
     likeCount,
     hasLiked,
-    isAvoidingXSS: checkXSS(post.content)
+    isAvoidingXSS: checkXSS(post.content),
   });
 });
 
@@ -64,11 +64,10 @@ postRouter.get("/:postId", ensureAuthUser, async (req, res, next) => {
 //   .replace(/'/g, "&#x27;");
 // }
 
-const checkXSS = function(value: string): boolean
-{
+const checkXSS = function (value: string): boolean {
   const regex = /<(".*?"|'.*?'|[^'"])*?>/g;
   return regex.test(value);
-}
+};
 
 postRouter.post(
   "/",
@@ -84,7 +83,7 @@ postRouter.post(
           content,
         },
         errors: errors.array(),
-        isAvoidingXSS: checkXSS(content)
+        isAvoidingXSS: checkXSS(content),
       });
     }
 

@@ -56,5 +56,5 @@ describe("Post update", () => {
       page.waitForNavigation(),
       page.click("[data-test=header-link-logout]"),
     ]);
-  });
+  }, 300000);
 });

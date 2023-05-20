@@ -9,6 +9,7 @@ import {
   forbidAuthUser,
 } from "@/middlewares/authentication";
 import {body, validationResult} from "express-validator";
+import {ensureOwnerOfUser} from "@/middlewares/current_user";
 
 export const userRouter = express.Router();
 
@@ -95,14 +96,19 @@ userRouter.get("/:userId/likes", ensureAuthUser, async (req, res, next) => {
 });
 
 /** A page to edit a user */
-userRouter.get("/:userId/edit", ensureAuthUser, async (req, res) => {
-  const {userId} = req.params;
-  const user = await User.find(Number(userId));
-  res.render("users/edit", {
-    user,
-    errors: [],
-  });
-});
+userRouter.get(
+  "/:userId/edit",
+  ensureAuthUser,
+  ensureOwnerOfUser,
+  async (req, res) => {
+    const {userId} = req.params;
+    const user = await User.find(Number(userId));
+    res.render("users/edit", {
+      user,
+      errors: [],
+    });
+  }
+);
 
 const storage = multer.diskStorage({
   destination: join("public", "image", "users"),
