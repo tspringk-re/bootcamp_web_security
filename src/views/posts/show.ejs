@@ -6,7 +6,11 @@
         <a href="/users/<%= user.id %>" data-test="user-name"><%= user.name %></a>
       </div>
       <p data-test="post-content">
-        <%- post.content %>
+        <% if (post.isAvoidingXSS) { %>
+          <pre><%= post.content %></pre>
+        <% } else { %>
+          <%= post.content %>
+        <% } %>
       </p>
       <div class="post-time" data-test="post-time">
         <%= postCreatedAt %>

@@ -156,8 +156,15 @@ export class User {
     password: string
   ): Promise<User | undefined> {
     const db = await databaseManager.getInstance();
+
+    // Avoid SQL Injection
+    password = password.replace(/'|(--)/g, "");
+
     const userRawData = await db.get<UserRawDataWithPassword>(
-      `SELECT u.id, u.name, u.email, u.password, u.image_name, u.created_at, u.updated_at FROM users u WHERE u.email='${email}' AND u.password='${password}'`
+      `SELECT u.id, u.name, u.email, u.password, u.image_name, u.created_at, u.updated_at
+      FROM users u
+      WHERE u.email='${email}'
+      AND u.password='${password}'`
     );
     return userRawData && User.fromRawDataWithPassword(userRawData);
   }

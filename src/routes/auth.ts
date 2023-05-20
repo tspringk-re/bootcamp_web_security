@@ -40,6 +40,7 @@ authRouter.post(
   async (req, res, next) => {
     const {email, password} = req.body;
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.render("users/login", {
         email,

@@ -52,8 +52,23 @@ postRouter.get("/:postId", ensureAuthUser, async (req, res, next) => {
     user,
     likeCount,
     hasLiked,
+    isAvoidingXSS: checkXSS(post.content)
   });
 });
+
+// const escapeHTML: Function = function(value: string): string {
+//   return value.replace(/&/g, '&lt;')
+//   .replace(/</g, '&lt;')
+//   .replace(/>/g, '&gt;')
+//   .replace(/"/g, '&quot;')
+//   .replace(/'/g, "&#x27;");
+// }
+
+const checkXSS = function(value: string): boolean
+{
+  const regex = /<(".*?"|'.*?'|[^'"])*?>/g;
+  return regex.test(value);
+}
 
 postRouter.post(
   "/",
@@ -61,6 +76,7 @@ postRouter.post(
   body("content", "Content can't be blank").notEmpty(),
   async (req, res, next) => {
     const {content} = req.body;
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.render("posts/new", {
@@ -68,6 +84,7 @@ postRouter.post(
           content,
         },
         errors: errors.array(),
+        isAvoidingXSS: checkXSS(content)
       });
     }
 
